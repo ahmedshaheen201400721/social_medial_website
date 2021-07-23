@@ -27,9 +27,12 @@ Auth::loginUsingId(1);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/tweets', [TweetController::class,"index"])->name('tweets.index');
+    Route::post('/tweets',  [TweetController::class,"store"])->name('tweets.store');
+    Route::get('/tweets/{tweet}', [TweetController::class,"show"])->name('tweets.show');
+
+
     Route::get('/explore', [ExploreController::class,'index'])->name('explore.index');
     Route::get('/notFriends',[ExploreController::class,'users'] )->name('notFriends');
-    Route::post('/tweets',  [TweetController::class,"store"])->name('tweets.store');
     Route::post('/profile/{user:name}/follow',[FollowController::class,'store'])->name('follow.store');
     Route::post('/tweet/{tweet}/likes/create',[LikeController::class,'store'])->name('like.store');
     

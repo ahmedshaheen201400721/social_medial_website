@@ -2,19 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Models\Thread;
+use App\Models\Reply;
 use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TweetFactory extends Factory
+class ReplyFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Tweet::class;
+    protected $model = Reply::class;
 
     /**
      * Define the model's default state.
@@ -24,11 +24,10 @@ class TweetFactory extends Factory
     public function definition()
     {
         return [
-            //
             'user_id'=>User::factory(),
-            'thread_id'=>Thread::factory(),
-            'body'=>$this->faker->paragraph(),
-            'likes_count'=>0,
+            'tweet_id'=>Tweet::factory(),
+            "body"=>$this->faker->paragraph(),
+            
         ];
     }
 }

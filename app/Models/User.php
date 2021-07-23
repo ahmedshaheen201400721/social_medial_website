@@ -71,6 +71,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Tweet::class,'user_id');
     }
+
+    public function threads()
+    {
+        return $this->hasMany(Thread::class,'user_id');
+    }
     
 
 

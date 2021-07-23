@@ -46,7 +46,8 @@ class TweetController extends Controller
      */
     public function show(Tweet $tweet)
     {
-        
+        $tweet->load('replies');
+        return inertia('Tweet/show',compact('tweet'));
     }
 
     /**

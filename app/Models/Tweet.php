@@ -11,13 +11,26 @@ class Tweet extends Model
 {
     use HasFactory,Likeable;
     public $guarded=[];
+    public $appends=['path'];
     protected $with=['user'];
+   
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+   
     public function getCreatedAtAttribute()
     {
         return (new Carbon($this->attributes['created_at']))->diffForHumans();
+    }
+
+    public function getPathAttribute()
+    {
+        return route('tweets.show',$this);
     }
 }
