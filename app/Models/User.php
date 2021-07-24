@@ -94,7 +94,7 @@ class User extends Authenticatable
         $ids=$this->followers()->pluck('follower_id');
         return Tweet::with('user')->where(function(Builder $query) use($ids){
              return $query->whereIn('user_id',$ids)->orWhere('user_id',$this->id) ;
-        })->latest()->get();
+        })->latest();
     }
     
     public function getPathAttribute()

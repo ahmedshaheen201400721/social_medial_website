@@ -27,6 +27,7 @@ class ReplyFactory extends Factory
             'user_id'=>User::factory(),
             'tweet_id'=>Tweet::factory(),
             "body"=>$this->faker->paragraph(),
+            "likes_count"=>0,
             
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Filter\QueryFilter;
 use App\Support\Traits\Likeable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ class Tweet extends Model
     use HasFactory,Likeable;
     public $guarded=[];
     public $appends=['path'];
-    protected $with=['user','thread'];
+    protected $with=['user','thread',"likes:id,user_id"];
    
     public function user()
     {
@@ -37,4 +38,9 @@ class Tweet extends Model
     {
         return route('tweets.show',$this);
     }
+    public function scopeFilter($query,QueryFilter $filter)
+    {
+        return $filter->apply($query);
+    }
 }
+

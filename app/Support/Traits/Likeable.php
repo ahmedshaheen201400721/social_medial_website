@@ -5,6 +5,8 @@ use App\Models\Like;
 
 trait Likeable
 {
+    // protected $with=['likes:id,user_id'];
+
     public function likes(){
         return $this->morphMany(Like::class,'likeable');
     }

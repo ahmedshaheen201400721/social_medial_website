@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Thread;
 use App\Models\Tweet;
+use App\Support\Filter\TweetFilter;
 use Illuminate\Http\Request;
 
 class TweetController extends Controller
@@ -13,10 +14,19 @@ class TweetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(TweetFilter $filters)
     {
-        $tweets=auth()->user()->timeline();
+        // if(request()->all()){
+        //     $tweets=Tweet::filter($filters)->get();
+        // }else{
+        //     $tweets=auth()->user()->timeline();
+        // }
+        $tweets=auth()->user()->timeline()->filter($filters)->get();
+
+
+        dd($tweets);
         $threads=auth()->user()->threads;
+
         // $friends=auth()->user()->followers()->get();
         return inertia('Dashboard',compact('tweets','threads'));
 

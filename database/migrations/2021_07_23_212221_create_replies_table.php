@@ -18,6 +18,7 @@ class CreateRepliesTable extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('tweet_id')->references('id')->on('tweets')->onDelete('cascade');
             $table->text('body');
+            $table->integer('likes_count');
             $table->timestamps();
         });
     }

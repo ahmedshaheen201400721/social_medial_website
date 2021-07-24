@@ -14,6 +14,7 @@ class ReplyController extends Controller
         $reply= $tweet->replies()->create(
             ['body'=>$request->body,'user_id'=>auth()->id()]
         );
+        $tweet->increment('replies_count');
         return $reply;
     }
 }

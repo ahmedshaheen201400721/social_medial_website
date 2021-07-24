@@ -8,4 +8,4 @@
 - you can like reply or tweet
 - you can filter tweets accoriding to popularity,
 - you can subscribte to specific thread
-- you got noitification to sybscribed threads or when another comment to same tweet you commented before
+- you got noitification to sybscribed threads or when another reply to same tweet you replied before

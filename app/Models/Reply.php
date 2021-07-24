@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Support\Traits\Likeable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
 {
+    use Likeable;
     public $guarded=[];
     
     use HasFactory;
