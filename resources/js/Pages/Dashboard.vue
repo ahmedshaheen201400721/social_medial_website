@@ -1,6 +1,6 @@
 <template>
     <app-layout>
-        <tweet-form @newTweet="addTweet"></tweet-form>
+        <tweet-form @newTweet="addTweet" :threads="threads"></tweet-form>
         <div v-if="tweets.length>0">
             <Tweet v-for="(tweet,index) in displayedTweets" :key="index" :tweet="tweet" :user="tweet.user" ></Tweet>    
         </div>
@@ -21,6 +21,7 @@
         props:{
             friends:Object,
             tweets:Object,
+            threads:Object,
         },
         methods:{
             addTweet(Tweet){

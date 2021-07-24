@@ -12,11 +12,15 @@ class Tweet extends Model
     use HasFactory,Likeable;
     public $guarded=[];
     public $appends=['path'];
-    protected $with=['user'];
+    protected $with=['user','thread'];
    
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');
+    }
+    public function thread()
+    {
+        return $this->belongsTo(Thread::class,'thread_id');
     }
 
     public function replies()

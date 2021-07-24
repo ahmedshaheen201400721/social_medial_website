@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\ReplyController;
 use Illuminate\Support\Facades\Auth;
 
 Auth::loginUsingId(1);
@@ -29,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tweets', [TweetController::class,"index"])->name('tweets.index');
     Route::post('/tweets',  [TweetController::class,"store"])->name('tweets.store');
     Route::get('/tweets/{tweet}', [TweetController::class,"show"])->name('tweets.show');
+    Route::post('/tweets/{tweet}/replies', [ReplyController::class,"store"])->name('replies.store');
 
 
     Route::get('/explore', [ExploreController::class,'index'])->name('explore.index');
