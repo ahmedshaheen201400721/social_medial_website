@@ -27,23 +27,33 @@ Auth::loginUsingId(1);
 
 
 Route::middleware(['auth'])->group(function () {
+    //tweets
     Route::get('/tweets', [TweetController::class,"index"])->name('tweets.index');
     Route::post('/tweets',  [TweetController::class,"store"])->name('tweets.store');
     Route::get('/tweets/{tweet}', [TweetController::class,"show"])->name('tweets.show');
+    Route::delete('/tweets/{tweet}', [TweetController::class,"delete"])->name('tweets.delete')->middleware("can:update,tweet");
+
+    //replies
     Route::post('/tweets/{tweet}/replies', [ReplyController::class,"store"])->name('replies.store');
+    Route::delete('/replies/{reply}', [ReplyController::class,"delete"])->name('replies.delete')->middleware("can:update,reply");
 
-
+    //explore
     Route::get('/explore', [ExploreController::class,'index'])->name('explore.index');
     Route::get('/notFriends',[ExploreController::class,'users'] )->name('notFriends');
-    Route::post('/profile/{user:name}/follow',[FollowController::class,'store'])->name('follow.store');
-    Route::post('/tweet/{tweet}/likes/create',[LikeController::class,'store'])->name('like.store');
     
+    //profile
+    Route::post('/profile/{user:name}/follow',[FollowController::class,'store'])->name('follow.store');    
     Route::get('/profile/{user:name}/edit',[ProfileController::class,'edit'])->name('profil.edit');
     Route::put('/profile/{user:name}',[ProfileController::class,'update'])->name('profil.update');
     Route::get('/profile/{user:name}',[ProfileController::class,'show'])->name('profil.show');
+    
+    //likes
+    Route::post('/likes/create',[LikeController::class,'store'])->name('like.store');
+
 
 
 });
+
 
 
 Route::get('/', function () {

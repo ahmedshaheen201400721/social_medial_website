@@ -72,10 +72,26 @@ class User extends Authenticatable
         return $this->hasMany(Tweet::class,'user_id');
     }
 
+    public function latestTweet()
+    {
+        return $this->hasOne(Tweet::class)->latestOfMany();
+    }
+
     public function threads()
     {
         return $this->hasMany(Thread::class,'user_id');
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Reply::class,'user_id');
+    }
+
+    public function latestReply()
+    {
+        return $this->hasOne(Reply::class)->latestOfMany();
+    }
+
     
 
 
@@ -83,11 +99,12 @@ class User extends Authenticatable
     {
         return $this->profile_photo_url;
     }
+
     public function cover()
     {
         return $this->cover;
     }
-
+   
    
     public function timeline()
     {

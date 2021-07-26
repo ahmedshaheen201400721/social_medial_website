@@ -12,9 +12,16 @@ class Tweet extends Model
 {
     use HasFactory,Likeable;
     public $guarded=[];
-    public $appends=['path'];
-    protected $with=['user','thread',"likes:id,user_id"];
+    public $appends=['path','is_liked','can'];
+    protected $with=['user','thread',"likes"];
    
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function($tweet){
+            $tweet->replies->each->delete();
+        });
+    }
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');
@@ -38,9 +45,20 @@ class Tweet extends Model
     {
         return route('tweets.show',$this);
     }
+    public function getCanAttribute()
+    {
+        return auth()->user()->can('update',$this);
+    }
     public function scopeFilter($query,QueryFilter $filter)
     {
         return $filter->apply($query);
+    }
+
+    public function wasJustPublished()
+    {
+       $latest= new Carbon($this->created_at);
+
+        return $latest->gt(Carbon::now()->subSeconds(20));
     }
 }
 

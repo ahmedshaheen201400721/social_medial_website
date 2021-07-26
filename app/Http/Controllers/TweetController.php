@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Thread;
 use App\Models\Tweet;
+use App\Rules\Spam;
 use App\Support\Filter\TweetFilter;
 use Illuminate\Http\Request;
 
@@ -24,12 +25,19 @@ class TweetController extends Controller
         $tweets=auth()->user()->timeline()->filter($filters)->get();
 
 
-        dd($tweets);
+
+        // dd($tweets);
         $threads=auth()->user()->threads;
 
         // $friends=auth()->user()->followers()->get();
         return inertia('Dashboard',compact('tweets','threads'));
 
+    }
+
+    public function delete(Tweet $tweet)
+    {
+        $tweet->delete();
+        return 'deleted successfully';
     }
 
    
@@ -42,9 +50,10 @@ class TweetController extends Controller
      */
     public function store(Request $request)
     {
-        $attributes=$request->validate(['body'=>'required|max:255','thread'=>'required'],[],['body'=>'tweet']);
+        $this->authorize('create');
+        $attributes=$request->validate(['body'=>['required','max:255',new Spam],'thread'=>'required'],[],['body'=>'tweet']);
         $thread=Thread::find($request->thread);
-        $tweet=$thread->tweets()->create(['user_id'=>auth()->id(),"likes_count"=>0,'body'=>$request->body]);
+        $tweet=$thread->tweets()->create(['user_id'=>auth()->id(),"likes_count"=>0,"replies_count"=>0,'body'=>$request->body]);
         return $tweet->load('user');
     }
 

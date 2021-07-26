@@ -130,6 +130,7 @@
             <!-- Page Content -->
             <main>
                  <div class="container mx-auto">
+                     <Flash ></Flash>
                     <div class='flex mt-8'>
                         <div class="w-1/7"> 
                             <Nav />
@@ -159,11 +160,13 @@
     import JetNavLink from '@/Jetstream/NavLink'
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink'
     import Nav from '@/Jetstream/nav'
+    import Flash from '@/Jetstream/flash'
     import Friends from '@/Jetstream/Friends'
 
     export default {
         components: {
             Friends,
+            Flash,
             Nav,
             JetApplicationMark,
             JetBanner,

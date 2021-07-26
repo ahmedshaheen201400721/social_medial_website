@@ -2,10 +2,18 @@ require('./bootstrap');
 
 // Import modules...
 import { createApp, h } from 'vue';
+
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
+import mitt from 'mitt'
 
+window.emitter = mitt()
 const el = document.getElementById('app');
+ 
+
+window.flash=function(msg,color){
+  return  emitter.emit('flash', {msg,color})
+}
 
 createApp({
     render: () =>
@@ -20,9 +28,7 @@ createApp({
 
 // InertiaProgress.init({ color: '#4B5563' });
 InertiaProgress.init({
-    // The delay after which the progress bar will
-    // appear during navigation, in milliseconds.
-    delay: 250,
+    
   
     // The color of the progress bar.
     color: '#29d',

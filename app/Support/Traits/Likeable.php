@@ -5,7 +5,6 @@ use App\Models\Like;
 
 trait Likeable
 {
-    // protected $with=['likes:id,user_id'];
 
     public function likes(){
         return $this->morphMany(Like::class,'likeable');
@@ -23,8 +22,8 @@ trait Likeable
 
 
     }
-    public function isLiked(){
-        return $this->likes->where('user_id',auth()->id())->isNotEmpty();
+    public function getIsLikedAttribute(){
+        return $this->likes->where('user_id',auth()->id())->count()>0;
     }
     public function likeCount(){
         return $this->likes->count();

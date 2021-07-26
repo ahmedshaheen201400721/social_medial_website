@@ -39,7 +39,12 @@ export default {
                 }).then((response) =>{
                         this.body=""
                         this.$emit("newTweet",response.data)
+                        window.flash("tweet has been created successfully" ,'green')
                         this.sent=false;
+                }).catch((error)=>{
+                        this.sent=false;
+                    //   window.flash(errors,'red')
+                    //   console.log($page.props)
                 })
             }
         }
