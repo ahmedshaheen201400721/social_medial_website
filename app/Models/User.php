@@ -33,6 +33,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'cover',
+        
     ];
 
     /**
@@ -72,6 +74,7 @@ class User extends Authenticatable
         return $this->hasMany(Tweet::class,'user_id');
     }
 
+
     public function latestTweet()
     {
         return $this->hasOne(Tweet::class)->latestOfMany();
@@ -91,9 +94,6 @@ class User extends Authenticatable
     {
         return $this->hasOne(Reply::class)->latestOfMany();
     }
-
-    
-
 
     public function getAvatarAttribute()
     {

@@ -12,8 +12,9 @@ class ProfileController extends Controller
     //
     public function show(User $user)
     {
+        $can=auth()->user()->can('update',$user);
         $tweets=$user->tweets()->get();
-        return inertia('profile/index',compact('tweets',));
+        return inertia('profile/index',compact('user','tweets','can'));
     }
 
     public function edit(User $user)
@@ -42,10 +43,22 @@ class ProfileController extends Controller
 
     public function saveImg($img,$where)
     {
-        if($img){
+        // if($img){
             $url=$img->store("/{$where}s");
             return asset("/storage/$url");
-        }
-        return user()->$where;
-    }   
+        // }
+        // return auth()->user()->$where;
+    }  
+    
+    public function updateCover(Request $request,User $user)
+    {
+        // return $request->hasFile('cover')?"It's a File":"No! It's not a File";
+        // return $request->all();
+        // return $request->cover;
+        $request->validate(['cover'=>['required','image']]);
+        $cover=$this->saveImg($request->cover,'cover');
+        auth()->user()->update(['cover'=>$cover]);
+
+        return $cover;
+    }
 }

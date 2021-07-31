@@ -3,10 +3,10 @@
         <div class="flex-1"> 
       <div class="content w-5/6 mx-auto">
       
-         <Profile-header></Profile-header>
+         <Profile-header :user="user" :can="can"></Profile-header>
 
         <div v-if="tweets.length>0">
-            <Tweet v-for="(tweet,index) in tweets" :key="index" :user="$page.props.user" :tweet="tweet"></Tweet>  
+            <Tweet v-for="(tweet,index) in tweets" :key="index" :user="tweet.user" :tweet="tweet"></Tweet>  
         </div>
        <div v-else>No Tweets Yet</div>
             
@@ -27,6 +27,8 @@
         },
         props:{
             tweets:Object,
+            can:Boolean,
+            user:Object,
         },
         methods:{
             

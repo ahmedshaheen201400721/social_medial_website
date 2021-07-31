@@ -1,11 +1,19 @@
 <template>
-  <div
-    :class="level"
-    class="py-4 px-8 text-center fixed bottom-10 right-20 "
-    v-text="msg"
-    v-if="msg"
-  >
-      
+    <div>
+        <div
+            class="py-4 px-8 bg-green-400 text-center fixed bottom-10 right-20 "
+            v-text="msg"
+            v-if="msg && level"
+        >
+        </div>
+
+        <div
+            class="py-4 px-8 bg-red-400 text-center fixed bottom-10 right-20 "
+            v-text="msg"
+            v-if="msg && !level"
+        >
+            
+        </div>
   </div>
 </template>
 
@@ -19,15 +27,15 @@ export default {
     },
     computed:{
         level(){
-            return "bg-"+this.color+"-400"
+            return this.color=="green"
         }
     },
-    mounted(){
+    created(){
         window.emitter.on('flash', (object) => this.flashing(object) )
     },
     methods:{
         flashing(object){
-            this.msg=object.msg+object.color;
+            this.msg=object.msg;
             this.color=object.color
             setTimeout(()=>{
                 this.msg=""

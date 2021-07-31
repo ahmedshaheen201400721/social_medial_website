@@ -26,7 +26,6 @@ class TweetFactory extends Factory
         return [
             //
             'user_id'=>User::factory(),
-            'thread_id'=>Thread::factory(),
             'body'=>$this->faker->paragraph(),
             'likes_count'=>0,
             "replies_count"=>0,

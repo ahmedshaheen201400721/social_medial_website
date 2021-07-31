@@ -14,6 +14,7 @@ class TweetController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * 
      */
     public function index(TweetFilter $filters)
     {
@@ -27,10 +28,9 @@ class TweetController extends Controller
 
 
         // dd($tweets);
-        $threads=auth()->user()->threads;
 
         // $friends=auth()->user()->followers()->get();
-        return inertia('Dashboard',compact('tweets','threads'));
+        return inertia('Dashboard',compact('tweets'));
 
     }
 
@@ -50,10 +50,9 @@ class TweetController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create');
-        $attributes=$request->validate(['body'=>['required','max:255',new Spam],'thread'=>'required'],[],['body'=>'tweet']);
-        $thread=Thread::find($request->thread);
-        $tweet=$thread->tweets()->create(['user_id'=>auth()->id(),"likes_count"=>0,"replies_count"=>0,'body'=>$request->body]);
+        return $request->body;
+        $attributes=$request->validate(['body'=>['required','max:255',new Spam],],[],['body'=>'tweet']);
+        $tweet=Tweet::create(['user_id'=>auth()->id(),"likes_count"=>0,"replies_count"=>0,'body'=>$request->body]);
         return $tweet->load('user');
     }
 
@@ -89,7 +88,11 @@ class TweetController extends Controller
      */
     public function update(Request $request, Tweet $tweet)
     {
-        //
+        $this->authorize('update',$tweet);
+        $attributes=$request->validate(['body'=>['required','max:255',new Spam]],[],['body'=>'tweet']);
+        $tweet->update(['body'=>$request->body]);
+        $tweet=$tweet->refresh();
+        return $tweet->load('user');
     }
 
     /**

@@ -28,4 +28,11 @@ trait Likeable
     public function likeCount(){
         return $this->likes->count();
     }
+    public static function bootLikeable()
+    {
+        static::deleting(function($item){
+             $item->likes->each->delete();
+        });
+    }
+
 }

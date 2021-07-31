@@ -6,6 +6,7 @@ use App\Support\Traits\Likeable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Notification;
 
 class Reply extends Model
 {
@@ -14,19 +15,27 @@ class Reply extends Model
     protected $with=['likes'];
 
     public $guarded=[];
+
     
     use HasFactory;
+
 
     public static function boot()
     {
         parent::boot();
         static::created(function($reply){
-            $reply->tweet()->increment('likes_count');
+            $reply->tweet()->increment('replies_count');
+            $tweet=$reply->tweet;
+            if($tweet->subscriptions->count()>0){
+                Notification::send($tweet->subscribedUsers,new \App\Notifications\Subscription($tweet,$reply->user));
+            }
         });
 
         static::deleting(function($reply){
-            $reply->tweet()->decrement('likes_count');
+            $reply->tweet()->decrement('replies_count');
+            
         });
+       
     }
 
     public function user()

@@ -1,6 +1,6 @@
 <template>
-    <button @click="submit" class="p-4 bg-red-300 m-2 rounded-lg">
-        delete
+    <button @click="submit" class="block w-full px-4 text-center py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition">
+        Delete
     </button>
 </template>
 

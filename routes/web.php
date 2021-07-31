@@ -6,11 +6,13 @@ use Inertia\Inertia;
 
 
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\ThreadController;
 use Illuminate\Support\Facades\Auth;
 
 Auth::loginUsingId(1);
@@ -31,11 +33,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tweets', [TweetController::class,"index"])->name('tweets.index');
     Route::post('/tweets',  [TweetController::class,"store"])->name('tweets.store');
     Route::get('/tweets/{tweet}', [TweetController::class,"show"])->name('tweets.show');
+    Route::post('/tweets/{tweet}', [TweetController::class,"update"])->name('tweets.update');
     Route::delete('/tweets/{tweet}', [TweetController::class,"delete"])->name('tweets.delete')->middleware("can:update,tweet");
 
     //replies
     Route::post('/tweets/{tweet}/replies', [ReplyController::class,"store"])->name('replies.store');
     Route::delete('/replies/{reply}', [ReplyController::class,"delete"])->name('replies.delete')->middleware("can:update,reply");
+    Route::post('/replies/{reply}', [ReplyController::class,"update"])->name('replies.update')->middleware("can:update,reply");
 
     //explore
     Route::get('/explore', [ExploreController::class,'index'])->name('explore.index');
@@ -45,11 +49,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/{user:name}/follow',[FollowController::class,'store'])->name('follow.store');    
     Route::get('/profile/{user:name}/edit',[ProfileController::class,'edit'])->name('profil.edit');
     Route::put('/profile/{user:name}',[ProfileController::class,'update'])->name('profil.update');
+    Route::post('/profile/{user:name}/cover',[ProfileController::class,'updateCover'])->name('profil.cover');
     Route::get('/profile/{user:name}',[ProfileController::class,'show'])->name('profil.show');
-    
+
+    //subscribe
+    Route::post('/tweets/{tweet}/subscribe',[\App\Http\Controllers\SubscriptionController::class,'store'])->name('subscription.store');
+    Route::delete('/tweets/{tweet}/subscribe',[\App\Http\Controllers\SubscriptionController::class,'destroy'])->name('subscription.destroy');
+
     //likes
     Route::post('/likes/create',[LikeController::class,'store'])->name('like.store');
 
+    
 
 
 });
