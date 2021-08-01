@@ -3,7 +3,7 @@
         <div class="flex-1"> 
       <div class="content w-5/6 mx-auto">
       
-         <Profile-header :user="user" :can="can"></Profile-header>
+         <Profile-header :user="user" :can="can" :follow="follow"></Profile-header>
 
         <div v-if="tweets.length>0">
             <Tweet v-for="(tweet,index) in tweets" :key="index" :user="tweet.user" :tweet="tweet"></Tweet>  
@@ -28,6 +28,7 @@
         props:{
             tweets:Object,
             can:Boolean,
+            follow:Boolean,
             user:Object,
         },
         methods:{

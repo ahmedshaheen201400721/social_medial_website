@@ -12,7 +12,6 @@ use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ReplyController;
-use App\Http\Controllers\ThreadController;
 use Illuminate\Support\Facades\Auth;
 
 Auth::loginUsingId(1);
@@ -58,8 +57,12 @@ Route::middleware(['auth'])->group(function () {
 
     //likes
     Route::post('/likes/create',[LikeController::class,'store'])->name('like.store');
+    //Notifications
+    Route::get('/notifications/{user:id}',[\App\Http\Controllers\NotificationController::class,'show']);
 
-    
+    //search
+    Route::post('/search',[\App\Http\Controllers\SearchController::class,'index']);
+
 
 
 });

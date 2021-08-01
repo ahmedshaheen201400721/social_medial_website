@@ -63,7 +63,6 @@
                 }).then(response =>{
                         this.body=""
                         window.flash("the reply has been created successfully" ,'green')
-                        console.log(response.data,response)
                         this.replies.push(response.data)
                         this.sent=false;
                 }).catch((error)=>{

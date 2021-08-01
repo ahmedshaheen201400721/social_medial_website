@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Scout\Searchable;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,8 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use Follow;
+    use Searchable;
+
 
 
 
@@ -122,5 +125,10 @@ class User extends Authenticatable
     public function getCreatedAtAttribute()
     {
         return (new Carbon($this->attributes['created_at']))->diffForHumans();
+    }
+
+    public function searchableAs()
+    {
+        return 'socail_users';
     }
 }

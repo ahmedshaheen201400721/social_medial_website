@@ -18,7 +18,7 @@
         </div>
        
         <div class="flex justify-between items-center">
-            <!-- <x-follow :user="$page.props.user" v-if="can"></x-follow> -->
+            <Follow :user="user" v-if="!can" :following="follow" ></Follow>
 
         <Link class="p-2 ml-2 bg-blue-50 rounded-full"  v-if="can" :href="route('profile.show')">Edit Profile</Link>
         </div>
@@ -35,11 +35,12 @@
 <script>
     import {Link} from "@inertiajs/inertia-vue3"
 import { Method } from '@inertiajs/inertia'
+import Follow from "@/Jetstream/follow/follow"
 
 export default {
 
-    props:['can','user'],
-    components:{Link},
+    props:['can','user','follow'],
+    components:{Link,Follow},
     data(){
         return{
             response:false,

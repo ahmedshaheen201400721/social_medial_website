@@ -6,7 +6,7 @@
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
+                    <div class="flex justify-between items-center h-16">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex-shrink-0 flex items-center">
@@ -21,6 +21,10 @@
                                     Dashboard
                                 </jet-nav-link>
                             </div>
+                        </div>
+
+                        <div class="w-56 md:w-96 mr-32">
+                            <search></search>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -131,6 +135,7 @@
             <main>
                  <div class="container mx-auto">
                      <Flash ></Flash>
+                     <Box ></Box>
                     <div class='flex mt-8'>
                         <div class="w-1/7"> 
                             <Nav />
@@ -162,9 +167,13 @@
     import Nav from '@/Jetstream/nav'
     import Flash from '@/Jetstream/flash'
     import Friends from '@/Jetstream/Friends'
+    import Box from '@/Jetstream/chat/Box'
+    import search from '@/Jetstream/search/search'
 
     export default {
         components: {
+            search,
+            Box,
             Friends,
             Flash,
             Nav,

@@ -14,7 +14,8 @@ class ProfileController extends Controller
     {
         $can=auth()->user()->can('update',$user);
         $tweets=$user->tweets()->get();
-        return inertia('profile/index',compact('user','tweets','can'));
+        $follow=auth()->user()->isfollowing($user);
+        return inertia('profile/index',compact('user','tweets','can','follow'));
     }
 
     public function edit(User $user)
@@ -58,7 +59,6 @@ class ProfileController extends Controller
         $request->validate(['cover'=>['required','image']]);
         $cover=$this->saveImg($request->cover,'cover');
         auth()->user()->update(['cover'=>$cover]);
-
         return $cover;
     }
 }

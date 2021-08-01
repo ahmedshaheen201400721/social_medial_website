@@ -5,8 +5,7 @@
         </div>
 
         <!-- Full Screen Dropdown Overlay -->
-        <div v-show="open" class="fixed inset-0 z-40" @click="open = false">
-        </div>
+        <div v-show="open" class="fixed inset-0 z-40" @click="open = false"></div>
 
         <transition
             enter-active-class="transition ease-out duration-200"
@@ -15,6 +14,7 @@
             leave-active-class="transition ease-in duration-75"
             leave-from-class="transform opacity-100 scale-100"
             leave-to-class="transform opacity-0 scale-95">
+
             <div v-show="open"
                     class="absolute z-50 mt-2 rounded-md shadow-lg"
                     :class="[widthClass, alignmentClasses]"
@@ -65,6 +65,7 @@ export default {
         widthClass() {
             return {
                 '48': 'w-48',
+                '96': 'w-96',
             }[this.width.toString()]
         },
 

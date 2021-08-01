@@ -1,5 +1,5 @@
 <template>
-    <jet-dropdown align="left" width="">
+    <jet-dropdown align="left" width="96">
         <template #trigger>
                 <span class="inline-flex rounded-md">
                     <button @click="count=0" type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -34,7 +34,9 @@
                                     <img class="object-cover w-10 h-10 rounded-full" alt="User avatar" :src="notifcation.data.photo">
 
                                     <div class="mx-3">
-                                        <p class="text-gray-600 dark:text-gray-200">{{notifcation.data.user}} has replied on the Thread<a class="text-blue-500 dark:text-blue-300 hover:text-blue-400 hover:underline">{{notifcation.data.thread}}</a>.</p>
+                                        <p class="text-gray-600 dark:text-gray-200">{{notifcation.data.user}} has replied on the tweet 
+                                            <p class="text-blue-500 dark:text-blue-300 hover:text-blue-400 hover:underline">{{notifcation.data.tweet}}</p> .
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -49,7 +51,9 @@
                                     <img class="object-cover w-10 h-10 rounded-full" alt="User avatar" :src="notifcation.data.photo">
 
                                     <div class="mx-3">
-                                        <p class="text-gray-600 dark:text-gray-200">{{notifcation.data.user}} has replied on the Thread<a class="text-blue-500 dark:text-blue-300 hover:text-blue-400 hover:underline">{{notifcation.data.thread}}</a>.</p>
+                                        <p class="text-gray-600 dark:text-gray-200">{{notifcation.data.user}} has replied on the tweet 
+                                            <p class="text-blue-500 dark:text-blue-300 hover:text-blue-400 hover:underline"> {{notifcation.data.tweet}} </p> . 
+                                       </p>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +100,7 @@
                 .notification((notification) => {
                     console.log(notification);
                     this.count++;
-                    this.unreadnotification.push(notification)
+                    this.unreadnotification.unshift(notification)
                 });
         }
     }
