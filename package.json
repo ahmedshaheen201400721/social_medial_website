@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "laravel-echo": "^1.11.0",
+        "mitt": "^1.2.0",
         "pusher-js": "^7.0.3",
         "vue-mitt": "^0.0.1"
     }
