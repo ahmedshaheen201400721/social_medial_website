@@ -18476,6 +18476,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
     friends: Object
+  },
+  methods: {
+    showBox: function showBox(friend) {
+      window.showBox(friend);
+    }
   }
 });
 
@@ -19003,7 +19008,7 @@ __webpack_require__.r(__webpack_exports__);
         window.axios.post(this.route('tweets.store'), {
           body: this.body
         }).then(function (response) {
-          // consoel.log(response)
+          console.log(response);
           _this.body = "";
 
           _this.$emit("newTweet", response.data);
@@ -19011,6 +19016,7 @@ __webpack_require__.r(__webpack_exports__);
           window.flash("tweet has been created successfully", 'green');
           _this.sent = false;
         })["catch"](function (error) {
+          console.log(error);
           _this.sent = false;
           var err = error.response.data.errors.body[0] ? error.response.data.errors.body[0] : error.response.data.message;
           flash(error.response.data.errors.body[0], 'red');
@@ -19057,18 +19063,59 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-window.window.sendbtn = function () {
-  var printtext = document.getElementById('chatmsg');
-  var copytext = document.getElementById('typemsg');
-  var currentdate = new Date();
-  var copiedtext = copytext.value;
-  var printnow = '<div class="flex justify-end pt-2 pl-10">' + '<span class="bg-green-900 h-auto text-gray-200 text-xs font-normal rounded-sm px-1 items-end flex justify-end overflow-hidden " style="font-size: 10px;">' + copiedtext + '<span class="text-gray-400 pl-1" style="font-size: 8px;">' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</span>' + '</div>';
-  printtext.insertAdjacentHTML('beforeend', printnow);
-  var box = document.getElementById('journal-scroll');
-  box.scrollTop = box.scrollHeight;
-};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  created: function created() {
+    var _this = this;
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+    window.emitter.on('showBox', function (friend) {
+      _this.show(friend);
+
+      axios.get("/messages/" + friend.id).then(function (res) {
+        _this.conversation = res.data.conversation;
+        _this.messages = res.data.messages;
+        _this.hide = false;
+      });
+    });
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    window.Echo["private"]('App.Models.User.' + this.$page.props.user.id).listen("MessageCreated", function (res) {
+      _this2.messages.push(res.message);
+    });
+  },
+  methods: {
+    show: function show(friend) {
+      this.friend = friend;
+    },
+    send: function send() {
+      // console.log(this.message)
+      axios.post(route("messages.store", this.conversation), {
+        'body': this.message,
+        'sender_id': this.user.id,
+        'reciever_id': this.friend.id
+      }).then(function (res) {
+        return console.log(res);
+      });
+      this.messages.push({
+        'body': this.message,
+        'sender_id': this.user.id,
+        'created_at': "1 second ago"
+      });
+      this.message = "";
+    }
+  },
+  data: function data() {
+    return {
+      user: this.$page.props.user,
+      friend: null,
+      hide: false,
+      message: "",
+      messages: [],
+      conversation: null
+    };
+  }
+});
 
 /***/ }),
 
@@ -20662,6 +20709,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Layouts_AppLayout__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/Layouts/AppLayout */ "./resources/js/Layouts/AppLayout.vue");
 /* harmony import */ var _Jetstream_AddFriend__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/Jetstream/AddFriend */ "./resources/js/Jetstream/AddFriend.vue");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -20669,12 +20728,49 @@ __webpack_require__.r(__webpack_exports__);
     AppLayout: _Layouts_AppLayout__WEBPACK_IMPORTED_MODULE_0__.default,
     AddFriend: _Jetstream_AddFriend__WEBPACK_IMPORTED_MODULE_1__.default
   },
-  props: {
-    notFollowers: Object
+  methods: {
+    addUsers: function addUsers() {
+      var _this = this;
+
+      var append = "?page=" + this.page;
+      axios("/api/explore" + append).then(function (res) {
+        return res.data;
+      }).then(function (res) {
+        var _this$notFollowers;
+
+        (_this$notFollowers = _this.notFollowers).push.apply(_this$notFollowers, _toConsumableArray(res.data));
+
+        _this.page++;
+
+        if (res.data.length > 0) {
+          _this.readyToConsumeUsers = true;
+        }
+      })["catch"](function (e) {
+        return _this.readyToConsumeUsers = false;
+      });
+    }
   },
-  methods: {},
+  created: function created() {
+    var _this2 = this;
+
+    this.addUsers();
+
+    window.onscroll = function () {
+      var bottomOfWindow = document.documentElement.scrollTop + window.innerHeight > document.documentElement.offsetHeight - 400;
+
+      if (bottomOfWindow && _this2.readyToConsumeUsers) {
+        _this2.readyToConsumeUsers = false;
+
+        _this2.addUsers();
+      }
+    };
+  },
   data: function data() {
-    return {};
+    return {
+      notFollowers: [],
+      readyToConsumeUsers: false,
+      page: 1
+    };
   }
 });
 
@@ -20935,14 +21031,27 @@ var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"flex items-center mt-7\"><div class=\"\"><p tabindex=\"0\" class=\"focus:outline-none text-xs text-gray-300\">Products</p><p tabindex=\"0\" class=\"focus:outline-none mt-2 text-base sm:text-lg md:text-xl 2xl:text-2xl text-gray-50\">28</p></div><div class=\"ml-12\"><p tabindex=\"0\" class=\"focus:outline-none text-xs text-gray-300\">Revenue</p><p tabindex=\"0\" class=\"focus:outline-none mt-2 text-base sm:text-lg md:text-xl 2xl:text-2xl text-gray-50\">$2890</p></div><div class=\"ml-12\"><p tabindex=\"0\" class=\"focus:outline-none text-xs text-gray-300\">Average</p><p tabindex=\"0\" class=\"focus:outline-none mt-2 text-base sm:text-lg md:text-xl 2xl:text-2xl text-gray-50\">$169</p></div></div>", 1);
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
-    tabindex: "0",
-    "class": "focus:outline-none",
-    src: $props.friend.avatar,
-    alt: "man avatar"
-  }, null, 8
+  var _component_inertia_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("inertia-link");
+
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_inertia_link, {
+    href: _ctx.route('profil.show', $props.friend)
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
+        tabindex: "0",
+        "class": "focus:outline-none",
+        src: $props.friend.avatar,
+        alt: "man avatar"
+      }, null, 8
+      /* PROPS */
+      , ["src"]), _hoisted_4];
+    }),
+    _: 1
+    /* STABLE */
+
+  }, 8
   /* PROPS */
-  , ["src"]), _hoisted_4])]), _hoisted_5]);
+  , ["href"])])]), _hoisted_5]);
 }
 
 /***/ }),
@@ -21679,32 +21788,44 @@ var _hoisted_3 = {
   "class": "px-4"
 };
 var _hoisted_4 = {
-  "class": "text-sm"
-};
-var _hoisted_5 = {
   key: 1
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_inertia_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("inertia-link");
+
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [_hoisted_2, $props.friends.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("ul", _hoisted_3, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.friends, function (friend, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", {
-      key: index
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
+      key: index,
+      "class": "flex items-center mt-2"
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_inertia_link, {
       href: friend.path,
-      "class": "flex items-center mt-4"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
-      src: friend.avatar,
-      alt: "",
-      "class": "w-12 mr-6 h-12 rounded-full"
-    }, null, 8
-    /* PROPS */
-    , ["src"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(friend.name), 1
-    /* TEXT */
-    )], 8
-    /* PROPS */
-    , ["href"])]);
+      "class": ""
+    }, {
+      "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+        return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
+          src: friend.avatar,
+          alt: "",
+          "class": "w-12 mr-6 h-12 rounded-full"
+        }, null, 8
+        /* PROPS */
+        , ["src"])];
+      }),
+      _: 2
+      /* DYNAMIC */
+
+    }, 1032
+    /* PROPS, DYNAMIC_SLOTS */
+    , ["href"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", {
+      "class": "text-sm cursor-pointer",
+      onClick: function onClick($event) {
+        return $options.showBox(friend);
+      }
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(friend.name), 9
+    /* TEXT, PROPS */
+    , ["onClick"])]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_5, " NO Friends yet "))]);
+  ))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_4, " NO Friends yet "))]);
 }
 
 /***/ }),
@@ -22739,51 +22860,163 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = {
-  "class": "hidden w-80 h-96 bg-white rounded shadow-2xl absolute bottom-4 right-32"
+  key: 0,
+  "class": "w-80 h-96 bg-white rounded shadow-2xl fixed bottom-4 right-32 z-50 "
+};
+var _hoisted_2 = {
+  "class": "w-full h-10 bg-gray-900 rounded-tr rounded-tl flex justify-between items-center"
+};
+var _hoisted_3 = {
+  "class": "flex justify-center items-center"
+};
+var _hoisted_4 = {
+  "class": "text-xs font-medium text-gray-300 ml-1"
+};
+var _hoisted_5 = {
+  "class": "overflow-auto px-1 py-1",
+  style: {
+    "height": "19rem"
+  },
+  id: "journal-scroll"
+};
+var _hoisted_6 = {
+  key: 0,
+  "class": "flex justify-end pt-2 pl-10"
+};
+var _hoisted_7 = {
+  "class": "bg-green-900 h-auto text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end flex justify-end ",
+  style: {
+    "font-size": "10px"
+  }
+};
+var _hoisted_8 = {
+  "class": "text-gray-400 pl-1",
+  style: {
+    "font-size": "8px"
+  }
+};
+var _hoisted_9 = {
+  key: 1,
+  "class": "flex items-center pr-10 pt-2"
 };
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<nav class=\"w-full h-10 bg-gray-900 rounded-tr rounded-tl flex justify-between items-center\"><div class=\"flex justify-center items-center\"><i class=\"mdi mdi-arrow-left font-normal text-gray-300 ml-1\"></i> <img src=\"https://i.imgur.com/IAgGUYF.jpg\" class=\"rounded-full ml-1\" width=\"25\" height=\"25\"> <span class=\"text-xs font-medium text-gray-300 ml-1\">Alex cairo</span></div><div class=\"flex items-center\"><i class=\"mdi mdi-video text-gray-300 mr-4\"></i> <i class=\"mdi mdi-phone text-gray-300 mr-2\"></i> <i class=\"mdi mdi-dots-vertical text-gray-300 mr-2\"></i></div></nav><div class=\"overflow-auto px-1 py-1\" style=\"height:19rem;\" id=\"journal-scroll\"><div class=\"flex items-center pr-10\"><img src=\"https://i.imgur.com/IAgGUYF.jpg\" class=\"rounded-full shadow-xl\" width=\"15\" height=\"15\" style=\"box-shadow:;\"> <span class=\"flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end\" style=\"font-size:10px;\">Hi Dr.Hendrikson, I haven&#39;t been feeling well for past few days. <span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">01:25am</span></span></div><div class=\"flex justify-end pt-2 pl-10\"><span class=\"bg-green-900 h-auto text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end flex justify-end \" style=\"font-size:10px;\">Lets jump on a video call. <span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">02.30am</span></span></div><div class=\"flex justify-center\"><span class=\"text-gray-500 text-xs pt-4\" style=\"font-size:8px;\">Call started at 02:33 am</span></div><div class=\"flex justify-center\"><span class=\"text-gray-500 text-xs\" style=\"font-size:8px;\">Call ended at 02:33 am</span></div><div class=\"flex items-center pr-10 mt-1\"><img src=\"https://i.imgur.com/IAgGUYF.jpg\" class=\"rounded-full shadow-xl\" width=\"15\" height=\"15\"> <span class=\"flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs p-1 font-normal rounded-sm px-1 items-end\" style=\"font-size:10px;\">How often should i take the medicine? <span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">01:25am</span></span></div><div class=\"flex justify-end pt-2 pl-10\"><span class=\"bg-green-900 h-auto text-gray-200 text-xs font-normal p-1 rounded-sm px-1 items-end flex justify-end \" style=\"font-size:10px;\">Twice a day, at breakfast and before bed <span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">02.30am</span></span></div><div class=\"flex items-center pr-10 pt-2\"><img src=\"https://i.imgur.com/IAgGUYF.jpg\" class=\"rounded-full shadow-xl\" width=\"15\" height=\"15\"> <span class=\"flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end\" style=\"font-size:10px;\">Thanks a lot doc<span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">01:25am</span></span></div><div class=\"flex justify-end pt-2 pl-10\"><span class=\"bg-green-900 h-auto text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end flex justify-end \" style=\"font-size:10px;\">Thats my duty, mention not <span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">02.30am</span></span></div><div class=\"flex items-center pr-10 pt-2\"><img src=\"https://i.imgur.com/IAgGUYF.jpg\" class=\"rounded-full shadow-xl\" width=\"15\" height=\"15\"> <span class=\"flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end\" style=\"font-size:10px;\">sorry to bother again but can i ask you one more favour?<span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">01:25am</span></span></div><div class=\"flex justify-end pt-2 pl-10\"><span class=\"bg-green-900 h-auto text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end flex justify-end \" style=\"font-size:10px;\">yeah sure, go ahead?<span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">02.30am</span></span></div><div class=\"flex items-center pr-10 pt-2\"><img src=\"https://i.imgur.com/IAgGUYF.jpg\" class=\"rounded-full shadow-xl\" width=\"15\" height=\"15\"> <span class=\"flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end\" style=\"font-size:10px;\">I really had a scary feeling about this, can please advice some tricks to overcome my anxiety?<span class=\"text-gray-400 pl-1\" style=\"font-size:8px;\">01:25am</span></span></div><div class=\" \" id=\"chatmsg\"></div></div>", 2);
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)();
 
-var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "flex justify-between items-center p-1 "
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "relative"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
-  "class": "mdi mdi-emoticon-excited-outline absolute top-1 left-1 text-gray-400",
+var _hoisted_11 = {
+  "class": "flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end",
   style: {
-    "font-size": "17px !important",
-    "font-weight": "bold"
+    "font-size": "10px"
   }
-}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
-  type: "text",
-  "class": "rounded-full pl-6 pr-12 py-2 focus:outline-none h-auto placeholder-gray-100 bg-gray-900 text-white",
+};
+var _hoisted_12 = {
+  "class": "text-gray-400 pl-1",
   style: {
-    "font-size": "11px",
-    "width": "250px"
-  },
-  placeholder: "Type a message...",
-  id: "typemsg"
-}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
-  "class": "mdi mdi-paperclip absolute right-8 top-1 transform -rotate-45 text-gray-400"
-}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
-  "class": "mdi mdi-camera absolute right-2 top-1 text-gray-400"
-})]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "w-7 h-7 rounded-full bg-blue-300 text-center items-center flex justify-center hover:bg-gray-900 hover:text-white"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
-  "class": "mdi mdi-microphone "
-})]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+    "font-size": "8px"
+  }
+};
+
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+  "class": " ",
+  id: "chatmsg"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_14 = {
+  "class": "flex justify-between items-center p-1 "
+};
+var _hoisted_15 = {
+  "class": "relative"
+};
+var _hoisted_16 = {
   "class": "w-7 h-7 rounded-full bg-blue-300 text-center items-center flex justify-center"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
-  "class": "w-7 h-7 rounded-full text-center items-center flex justify-center focus:outline-none hover:bg-gray-900 hover:text-white",
-  onclick: "window.sendbtn"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+};
+
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
   "class": "mdi mdi-send "
-})])])], -1
+}, null, -1
 /* HOISTED */
 );
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [_hoisted_2, _hoisted_4]);
+  var _component_inertia_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("inertia-link");
+
+  return $data.friend && !$data.hide ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("nav", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("i", {
+    onClick: _cache[1] || (_cache[1] = function ($event) {
+      return $data.hide = true;
+    }),
+    "class": "cursor-pointer mdi mdi-arrow-left font-normal text-gray-300 ml-1"
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_inertia_link, {
+    href: $data.friend.path,
+    "class": "flex justify-center items-center"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
+        src: $data.friend.avatar,
+        "class": "rounded-full ml-1",
+        width: "25",
+        height: "25"
+      }, null, 8
+      /* PROPS */
+      , ["src"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.friend.name), 1
+      /* TEXT */
+      )];
+    }),
+    _: 1
+    /* STABLE */
+
+  }, 8
+  /* PROPS */
+  , ["href"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\" hidden flex items-center\"> <i class=\"mdi mdi-video text-gray-300 mr-4\"></i> <i class=\"mdi mdi-phone text-gray-300 mr-2\"></i> <i class=\"mdi mdi-dots-vertical text-gray-300 mr-2\"></i> </div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+    onClick: _cache[2] || (_cache[2] = function ($event) {
+      return $data.hide = true;
+    }),
+    "class": "cursor-pointer mr-4"
+  }, "❌")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"flex justify-center\"> <span class=\"text-gray-500 text-xs pt-4\" style=\"font-size: 8px;\">Call started at 02:33 am</span> </div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"flex justify-center\"> <span class=\"text-gray-500 text-xs\" style=\"font-size: 8px;\">Call ended at 02:33 am</span> </div> "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.messages, function (messag, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
+      key: index
+    }, [messag.sender_id == _ctx.$page.props.user.id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(messag.body), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(messag.created_at), 1
+    /* TEXT */
+    )])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
+      src: $data.friend.avatar,
+      "class": "rounded-full shadow-xl",
+      width: "15",
+      height: "15"
+    }, null, 8
+    /* PROPS */
+    , ["src"]), _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(messag.body), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(messag.created_at), 1
+    /* TEXT */
+    )])]))]);
+  }), 128
+  /* KEYED_FRAGMENT */
+  )), _hoisted_13]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <i class=\"mdi mdi-emoticon-excited-outline absolute top-1 left-1 text-gray-400\" style=\"font-size: 17px !important;font-weight: bold;\"></i>  "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+    name: "message",
+    onKeydown: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(function () {
+      return $options.send && $options.send.apply($options, arguments);
+    }, ["enter"])),
+    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+      return $data.message = $event;
+    }),
+    type: "text",
+    "class": "rounded-full pl-6 pr-12 py-2 focus:outline-none h-auto placeholder-gray-100 bg-gray-900 text-white",
+    style: {
+      "font-size": "11px",
+      "width": "250px"
+    },
+    placeholder: "Type a message...",
+    id: "typemsg"
+  }, null, 544
+  /* HYDRATE_EVENTS, NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.message]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <i class=\"mdi mdi-paperclip absolute right-8 top-1 transform -rotate-45 text-gray-400\"></i> <i class=\"mdi mdi-camera absolute right-2 top-1 text-gray-400\"></i>  ")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"w-7 h-7 rounded-full bg-blue-300 text-center items-center flex justify-center hover:bg-gray-900 hover:text-white\"> <i class=\"mdi mdi-microphone \"></i> </div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+    "class": "w-7 h-7 rounded-full text-center items-center flex justify-center \n                    focus:outline-none hover:bg-gray-900 hover:text-white",
+    onClick: _cache[5] || (_cache[5] = function ($event) {
+      return $options.send();
+    })
+  }, [_hoisted_17])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true);
 }
 
 /***/ }),
@@ -22872,7 +23105,7 @@ var _hoisted_4 = {
   "class": "text-lg font-bold mb-4"
 };
 
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Explore ");
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Explore Followers ");
 
 var _hoisted_6 = {
   "class": "text-lg font-bold mb-4"
@@ -26539,7 +26772,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_app_layout, null, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [$props.notFollowers.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.notFollowers, function (friend, index) {
+      return [$data.notFollowers.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.notFollowers, function (friend, index) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_add_friend, {
           key: index,
           friend: friend
@@ -26775,6 +27008,10 @@ window.flash = function (msg, color) {
     msg: msg,
     color: color
   });
+};
+
+window.showBox = function (friend) {
+  return emitter.emit('showBox', friend);
 };
 
 (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)({

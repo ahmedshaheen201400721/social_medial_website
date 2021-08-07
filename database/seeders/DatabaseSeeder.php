@@ -18,12 +18,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Tweet (has many replies) (belongs to thread) (belongs to user    )
-        \App\Models\User::factory(20)->hasThreads(rand(1,4))->create();
+        \App\Models\User::factory(20)->hasTweets(rand(1,4))->create();
        
-        $threads=Thread::with('user')->get();
-        $threads->each(function($t){
-            Tweet::factory(rand(1,4))->create(['thread_id'=>$t->id,'user_id'=>$t->user->id]);
-        });
+        // $threads=Thread::with('user')->get();
+        // $threads->each(function($t){
+        //     Tweet::factory(rand(1,4))->create(['thread_id'=>$t->id,'user_id'=>$t->user->id]);
+        // });
 
         $tweets=Tweet::all();
         $tweets->each(function($t){

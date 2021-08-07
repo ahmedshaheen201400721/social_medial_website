@@ -23,15 +23,17 @@ export default {
         submit(){
             if(!this.sent){
                     this.sent=true   
+
                     window.axios.post(this.route('tweets.store'),{
                     body:this.body,
                 }).then(response =>{
-                    // consoel.log(response)
+                    console.log(response)
                         this.body=""
                         this.$emit("newTweet",response.data)
                         window.flash("tweet has been created successfully" ,'green')
                         this.sent=false;
                 }).catch((error)=>{
+                    console.log(error)
                         this.sent=false;
                         let err=error.response.data.errors.body[0]?error.response.data.errors.body[0]:error.response.data.message;
                         flash(error.response.data.errors.body[0],'red')

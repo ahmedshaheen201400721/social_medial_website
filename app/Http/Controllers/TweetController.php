@@ -50,7 +50,7 @@ class TweetController extends Controller
      */
     public function store(Request $request)
     {
-        return $request->body;
+        // return $request->body;
         $attributes=$request->validate(['body'=>['required','max:255',new Spam],],[],['body'=>'tweet']);
         $tweet=Tweet::create(['user_id'=>auth()->id(),"likes_count"=>0,"replies_count"=>0,'body'=>$request->body]);
         return $tweet->load('user');

@@ -9,9 +9,9 @@ class ExploreController extends Controller
 
     public function index()
     {
-        $notFollowers=auth()->user()->notFollowers()->latest()->get();
+        // $notFollowers=auth()->user()->notFollowers()->latest()->get();
         // dd($notFollowers);
-        return inertia('explore/index',compact('notFollowers')); 
+        return inertia('explore/index'); 
     }
 
 

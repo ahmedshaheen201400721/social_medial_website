@@ -2,6 +2,7 @@
 
 namespace App\Support\Traits;
 
+use App\Models\Conversation;
 use App\Models\User;
 
 trait Follow{
@@ -14,11 +15,14 @@ trait Follow{
 
     public function follow($user)
     {
+        $this->setupConversation($user);
+        $user->followers()->attach($this);
         return $this->followers()->attach($user);
     }
     
     public function unfollow($user)
     {
+        $user->followers()->detach($this);
         return $this->followers()->detach($user);
     }
 
@@ -37,4 +41,28 @@ trait Follow{
     {
         return $this->followers()->toggle($user);
     }
+    public function setupConversation($user)
+    {
+        if(!$this->sharedConversationId($user)){
+            $conversation=Conversation::create(['name'=>$this->name."-".$user->name]);
+            $user->conversations()->attach($conversation);
+            $this->conversations()->attach($conversation);
+        }    
+    }
+    public function sharedConversationId($user)
+    {
+        $conversations1=$user->conversations()->pluck('id');
+        $conversations2=$this->conversations()->pluck('id');
+        $intersection=$conversations1->intersect($conversations2);
+        return $intersection->all();
+
+    }
+
+    public function sharedConversation($user)
+    {
+        $sharedConversationId=$this->sharedConversationId($user);
+        return $sharedConversationId?Conversation::find($sharedConversationId[0]):"";
+
+    }
+    
 }

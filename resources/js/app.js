@@ -15,6 +15,10 @@ window.flash=function(msg,color){
   return  emitter.emit('flash', {msg,color})
 }
 
+window.showBox=function(friend){
+    return  emitter.emit('showBox', friend)
+}
+  
 createApp({
     render: () =>
         h(InertiaApp, {

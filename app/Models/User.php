@@ -77,6 +77,12 @@ class User extends Authenticatable
         return $this->hasMany(Tweet::class,'user_id');
     }
 
+   
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class,'conversation_user');
+    }
+
 
     public function latestTweet()
     {

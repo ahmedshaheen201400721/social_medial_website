@@ -12,9 +12,10 @@ use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ReplyController;
+use App\Models\User;
+use App\Support\Filter\TweetFilter;
 use Illuminate\Support\Facades\Auth;
 
-Auth::loginUsingId(1);
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -63,7 +64,26 @@ Route::middleware(['auth'])->group(function () {
     //search
     Route::post('/search',[\App\Http\Controllers\SearchController::class,'index']);
 
+    //conversation
+    Route::get('/conversation/{conversation:id}',[\App\Http\Controllers\ConversationController::class,'show']);
+    //messages
+    Route::get('/messages/{user:id}',[\App\Http\Controllers\MessageController::class,'index'])->name('messages.index');
+    Route::post('/messages/{conversation}',[\App\Http\Controllers\MessageController::class,'store'])->name('messages.store');
 
+    //APIs
+
+    Route::get('/api/timeline',function(TweetFilter $filters){
+        return $tweets=auth()->user()->timeline()->filter($filters)->paginate(5);
+        // return $tweets=User::find(1)->timeline()->filter($filters)->paginate(5);
+    });
+
+    Route::get('/api/explore',function(){
+    return auth()->user()->notFollowers()->latest()->paginate(5);
+    });
+
+    Route::get('/api/conversations/{user}',function(User $user){
+    return auth()->user()->sharedConversation($user);
+    });
 
 });
 

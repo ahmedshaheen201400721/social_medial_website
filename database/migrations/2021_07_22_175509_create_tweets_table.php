@@ -21,7 +21,6 @@ class CreateTweetsTable extends Migration
             $table->integer('replies_count');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('thread_id')->references('id')->on('threads')->onDelete('cascade');
 
         });
     }

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageCreated;
+use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -12,10 +15,13 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
-        //
+        $conversation= auth()->user()->sharedConversation($user);
+        $messages=$conversation->messages;
+        return compact('conversation','messages');
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -24,7 +30,7 @@ class MessageController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -33,9 +39,10 @@ class MessageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,Conversation $conversation)
     {
-        //
+    $message= $conversation->messages()->create(['body'=>$request->body,'sender_id'=>$request->sender_id,'reciever_id'=>$request->reciever_id]);
+    event(new MessageCreated($request->reciever_id,$message));
     }
 
     /**

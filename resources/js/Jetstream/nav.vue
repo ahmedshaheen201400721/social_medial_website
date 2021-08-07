@@ -1,7 +1,7 @@
 <template>
     <ul class="ml-10">
         <li class="text-lg font-bold mb-4"> <Link :href="route('tweets.index')">Home</Link> </li>
-        <li class="text-lg font-bold mb-4"><Link :href="route('explore.index')"> Explore </Link> </li> 
+        <li class="text-lg font-bold mb-4"><Link :href="route('explore.index')"> Explore Followers </Link> </li> 
         <li class="text-lg font-bold mb-4"> <bell></bell> </li>
         <li class="text-lg font-bold mb-4">  <Link :href="route('profil.show',$page.props.user)"> Profile</Link>  </li>
     </ul>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Support\Filter\TweetFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,10 +16,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/user', function (Request $request) {
+    return auth()->user();
 });
 
 Route::get('/timeline',function(TweetFilter $filters){
         return $tweets=auth()->user()->timeline()->filter($filters)->paginate(5);
+        // return $tweets=User::find(1)->timeline()->filter($filters)->paginate(5);
+});
+
+Route::get('/explore',function(){
+    return auth()->user()->notFollowers()->latest()->paginate(5);
+});
+
+Route::get('/conversations/{user}',function(User $user){
+    return auth()->user()->sharedConversation($user);
 });

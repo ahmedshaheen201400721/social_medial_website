@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Conversation;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ConversationController extends Controller
@@ -46,8 +47,17 @@ class ConversationController extends Controller
      */
     public function show(Conversation $conversation)
     {
-        //
+        
     }
+
+    public function getConversation(User $user)
+    {
+        $conversation= auth()->user()->sharedConversation($user);
+        $messages=$conversation->messages;
+        return compact('conversation','messages');
+    }
+
+
 
     /**
      * Show the form for editing the specified resource.

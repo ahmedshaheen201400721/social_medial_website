@@ -1165,12 +1165,6 @@ select {
 .-left-3 {
 	left: -0.75rem;
 }
-.-bottom-4 {
-	bottom: -1rem;
-}
-.-bottom-full {
-	bottom: -100%;
-}
 .z-0 {
 	z-index: 0;
 }
@@ -1307,9 +1301,6 @@ select {
 .ml-10 {
 	margin-left: 2.5rem;
 }
-.mr-8 {
-	margin-right: 2rem;
-}
 .mr-32 {
 	margin-right: 8rem;
 }
@@ -1433,6 +1424,9 @@ select {
 .w-11\/12 {
 	width: 91.666667%;
 }
+.w-56 {
+	width: 14rem;
+}
 .w-5\/6 {
 	width: 83.333333%;
 }
@@ -1447,9 +1441,6 @@ select {
 }
 .w-2 {
 	width: 0.5rem;
-}
-.w-56 {
-	width: 14rem;
 }
 .min-w-0 {
 	min-width: 0px;
