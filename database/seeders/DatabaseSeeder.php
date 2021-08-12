@@ -29,8 +29,13 @@ class DatabaseSeeder extends Seeder
         $tweets->each(function($t){
             Reply::factory(rand(1,4))->create(['tweet_id'=>$t->id,'user_id'=>rand(1,20)]);
         });
-        User::first()->follow(range(2,6));
-        
+        User::first()->follow(User::find(2));
+        User::first()->follow(User::find(3));
+        User::first()->follow(User::find(4));
+        User::first()->follow(User::find(5));
+        User::first()->follow(User::find(6));
+        User::first()->update(['email'=>"a@a.com"]);
+        User::find(2)->update(['email'=>"b@b.com"]);
         
     }
 }
