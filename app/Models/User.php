@@ -111,7 +111,7 @@ class User extends Authenticatable
 
     public function cover()
     {
-        return $this->cover;
+        return $this->cover??"https://img.freepik.com/free-photo/dark-grey-black-slate-texture-with-high-resolution-background-natural-black-stone-wall_38607-444.jpg?size=626&ext=jpg";
     }
    
    

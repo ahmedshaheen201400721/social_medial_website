@@ -9,18 +9,7 @@
                     </div>
                 </div>
                 <div class="flex items-center mt-7">
-                    <div class="">
-                        <p tabindex="0" class="focus:outline-none text-xs text-gray-300">Products</p>
-                        <p tabindex="0" class="focus:outline-none mt-2 text-base sm:text-lg md:text-xl 2xl:text-2xl text-gray-50">28</p>
-                    </div>
-                    <div class="ml-12">
-                        <p tabindex="0" class="focus:outline-none text-xs text-gray-300">Revenue</p>
-                        <p tabindex="0" class="focus:outline-none mt-2 text-base sm:text-lg md:text-xl 2xl:text-2xl text-gray-50">$2890</p>
-                    </div>
-                    <div class="ml-12">
-                        <p tabindex="0" class="focus:outline-none text-xs text-gray-300">Average</p>
-                        <p tabindex="0" class="focus:outline-none mt-2 text-base sm:text-lg md:text-xl 2xl:text-2xl text-gray-50">$169</p>
-                    </div>
+                  {{friend.description}}
                 </div>
             </div>    
 </template>

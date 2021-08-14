@@ -90,12 +90,6 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::redirect('/', "tweets");
-    // return Inertia::render('Welcome', [
-    //     'canLogin' => Route::has('login'),
-    //     'canRegister' => Route::has('register'),
-    //     'laravelVersion' => Application::VERSION,
-    //     'phpVersion' => PHP_VERSION,
-    // ]);
-// });
+
 
 Route::redirect('/dashboard', "/tweets")->name('dashboard')->middleware(['auth:sanctum', 'verified']);

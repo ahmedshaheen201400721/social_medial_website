@@ -57,6 +57,7 @@ export default {
     mounted(){
          window.Echo.private('App.Models.User.' + this.$page.props.user.id).listen("MessageCreated",res=>{
              this.messages.push(res.message)
+             window.ring();
          })
     },
     methods:{

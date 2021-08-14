@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Tweet (has many replies) (belongs to thread) (belongs to user    )
-        \App\Models\User::factory(20)->hasTweets(rand(1,4))->create();
+        // Tweet (has many replies) (belongs to thred) (belongs to user    )
+        \App\Models\User::factory(20)->hasTweets(rand(5,10))->create();
        
         // $threads=Thread::with('user')->get();
         // $threads->each(function($t){
@@ -34,8 +34,8 @@ class DatabaseSeeder extends Seeder
         User::first()->follow(User::find(4));
         User::first()->follow(User::find(5));
         User::first()->follow(User::find(6));
-        User::first()->update(['email'=>"a@a.com"]);
-        User::find(2)->update(['email'=>"b@b.com"]);
+        User::first()->update(['email'=>"a@a.com","name"=>"ahmed"]);
+        User::find(2)->update(['email'=>"b@b.com","name"=>"mohamed"]);
         
     }
 }

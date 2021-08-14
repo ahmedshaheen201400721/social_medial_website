@@ -135,6 +135,7 @@
             <main>
                  <div class="container mx-auto">
                      <Flash ></Flash>
+                     <Ring ></Ring>
                      <Box ></Box>
                     <div class='flex mt-8'>
                         <div class="w-1/7"> 
@@ -166,6 +167,7 @@
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink'
     import Nav from '@/Jetstream/nav'
     import Flash from '@/Jetstream/flash'
+    import Ring from '@/Jetstream/ring'
     import Friends from '@/Jetstream/Friends'
     import Box from '@/Jetstream/chat/Box'
     import search from '@/Jetstream/search/search'
@@ -175,8 +177,9 @@
             search,
             Box,
             Friends,
-            Flash,
+            Ring,
             Nav,
+            Flash,
             JetApplicationMark,
             JetBanner,
             JetDropdown,

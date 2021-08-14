@@ -29,6 +29,9 @@ class Reply extends Model
             if($tweet->subscriptions->count()>0){
                 Notification::send($tweet->subscribedUsers,new \App\Notifications\Subscription($tweet,$reply->user));
             }
+            Notification::send($tweet->user,new \App\Notifications\Subscription($tweet,$reply->user));
+          
+
         });
 
         static::deleting(function($reply){

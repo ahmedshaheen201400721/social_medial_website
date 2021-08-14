@@ -15,6 +15,12 @@ window.flash=function(msg,color){
   return  emitter.emit('flash', {msg,color})
 }
 
+
+
+window.ring=function(){
+    return  emitter.emit('ring')
+  }
+
 window.showBox=function(friend){
     return  emitter.emit('showBox', friend)
 }
