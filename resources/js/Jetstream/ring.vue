@@ -12,7 +12,7 @@ export default {
     },
     methods:{
         ringing(){
-            var audio = new Audio("http://ec2-34-201-68-96.compute-1.amazonaws.com:8000/storage/sound.mp3");
+            var audio = new Audio("https://socialwebsite.ddns.net/storage/sound.mp3");
             audio.play();
         }
     }
