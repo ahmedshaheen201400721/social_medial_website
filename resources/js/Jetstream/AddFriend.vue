@@ -8,7 +8,7 @@
                         </inertia-link>
                     </div>
                 </div>
-                <div class="flex items-center mt-7">
+                <div class="flex items-center p-6 mt-7">
                   {{friend.description}}
                 </div>
             </div>    
