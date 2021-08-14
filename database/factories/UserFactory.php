@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
-            "cover"=>asset("/storage/covers/default.jpg"),
+            "cover"=>"https://img.freepik.com/free-photo/dark-grey-black-slate-texture-with-high-resolution-background-natural-black-stone-wall_38607-444.jpg?size=626&ext=jpg",
             "description"=>$this->faker->paragraph(),
         ];
     }
